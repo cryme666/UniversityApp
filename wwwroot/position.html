@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        #updatePositionForm {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="d-flex justify-content-center mt-4">
+        <button class="btn btn-secondary me-2" onclick="window.location.href='index.html'">Go to Lecturers</button>
+        <button class="btn btn-secondary" onclick="window.location.href='subject.html'">Go to Subjects</button>
+    </div>
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Positions</h1>
+
+        <div class="mb-4">
+            <h2>Add Position</h2>
+            <form id="addPositionForm" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" id="positionName" class="form-control" placeholder="Position Name" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="number" id="hourlyRate" class="form-control" placeholder="Hourly Rate" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Add Position</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mb-4">
+            <h2>Positions List</h2>
+            <ul id="positions" class="list-group"></ul>
+        </div>
+
+        <div class="mb-4">
+            <h2 id="updatePositionTitle" style="display: none;">Update Position</h2>
+            <form id="updatePositionForm" class="row g-3">
+                <input type="hidden" id="updatePositionID">
+                <div class="col-md-6">
+                    <input type="text" id="updatePositionName" class="form-control" placeholder="Position Name" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="number" id="updateHourlyRate" class="form-control" placeholder="Hourly Rate" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Update Position</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/universityHub")
+            .build();
+
+        connection.on("ReceivePositions", (positions) => {
+            const list = document.getElementById("positions");
+            list.innerHTML = "";
+            positions.forEach(p => {
+                const item = document.createElement("li");
+                item.className = "list-group-item d-flex justify-content-between align-items-start";
+                item.innerHTML = `
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">${p.positionName}</div>
+                        <p class="mb-0">Hourly Rate: $${p.hourlyRate}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-warning me-2" onclick="populateUpdateForm(${p.positionID}, '${p.positionName}', ${p.hourlyRate})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deletePosition(${p.positionID})">Delete</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        });
+
+        document.getElementById("addPositionForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const position = {
+                positionName: document.getElementById("positionName").value,
+                hourlyRate: parseFloat(document.getElementById("hourlyRate").value)
+            };
+            await connection.invoke("AddPosition", position);
+            e.target.reset();
+        });
+
+        function populateUpdateForm(id, name, rate) {
+            document.getElementById("updatePositionID").value = id;
+            document.getElementById("updatePositionName").value = name;
+            document.getElementById("updateHourlyRate").value = rate;
+
+            document.getElementById("updatePositionForm").style.display = "block";
+            document.getElementById("updatePositionTitle").style.display = "block";
+        }
+
+        document.getElementById("updatePositionForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const position = {
+                positionID: parseInt(document.getElementById("updatePositionID").value),
+                positionName: document.getElementById("updatePositionName").value,
+                hourlyRate: parseFloat(document.getElementById("updateHourlyRate").value)
+            };
+            await connection.invoke("EditPosition", position);
+
+            document.getElementById("updatePositionForm").style.display = "none";
+            document.getElementById("updatePositionTitle").style.display = "none";
+
+            e.target.reset();
+        });
+
+        async function deletePosition(id) {
+            await connection.invoke("DeletePosition", id);
+        }
+
+        connection.start().then(() => {
+            connection.invoke("SendPositions");
+        }).catch(err => console.error(err));
+    </script>
+</body>
+</html>

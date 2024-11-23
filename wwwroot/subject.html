@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniversityApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        #updateSubjectForm {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="d-flex justify-content-center mt-4">
+        <button class="btn btn-secondary me-2" onclick="window.location.href='index.html'">Go to Lecturers</button>
+        <button class="btn btn-secondary" onclick="window.location.href='position.html'">Go to Positions</button>
+    </div>
+        <div class="container py-5">
+        <h1 class="text-center mb-4">Subjects</h1>
+        <div class="mb-4">
+            <h2>Add Subject</h2>
+            <form id="addSubjectForm" class="row g-3">
+                <div class="col-md-2">
+                    <input type="text" id="title" class="form-control" placeholder="Subject name" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Add Subject</button>
+                </div>
+            </form>
+        </div>
+        <div class="mb-4">
+            <h2>Subjects List</h2>
+            <ul id="subjects" class="list-group"></ul>
+        </div>
+        <div class="mb-4">
+            <h2 id="updateSubjectTitle" style="display: none;">Update Subject</h2>
+            <form id="updateSubjectForm" class="row g-3">
+                <input type="hidden" id="updateSubjectID">
+                <div class="col-md-2">
+                    <input type="text" id="updateTitle" class="form-control" placeholder="Updated subject name" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Update Subject</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideUpdateForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/universityHub")
+            .build();
+
+        connection.on("ReceiveSubjects", (subjects) => {
+            const list = document.getElementById("subjects");
+            list.innerHTML = "";
+            subjects.forEach(s => {
+                const item = document.createElement("li");
+                item.className = "list-group-item d-flex justify-content-between align-items-start";
+                item.innerHTML = `
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">${s.subjectName}</div>
+                    </div>
+                    <button class="btn btn-sm btn-warning me-2" onclick="showUpdateForm(${s.subjectID}, '${s.subjectName}')">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteSubject(${s.subjectID})">Delete</button>
+                `;
+                list.appendChild(item);
+            });
+        });
+
+        document.getElementById("addSubjectForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const subject = {
+                subjectName: document.getElementById("title").value,
+            };
+            await connection.invoke("AddSubject", subject);
+            e.target.reset();
+        });
+
+        function showUpdateForm(subjectID, subjectName) {
+            document.getElementById("updateSubjectID").value = subjectID;
+            document.getElementById("updateTitle").value = subjectName;
+
+            document.getElementById("updateSubjectTitle").style.display = "block";
+            document.getElementById("updateSubjectForm").style.display = "flex";
+        }
+
+        function hideUpdateForm() {
+            document.getElementById("updateSubjectTitle").style.display = "none";
+            document.getElementById("updateSubjectForm").style.display = "none";
+        }
+
+        document.getElementById("updateSubjectForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            console.log(document.getElementById("updateSubjectID").value)
+            const subject = {
+                // subjectID: document.getElementById("updateSubjectID").value,
+                subjectName: document.getElementById("updateTitle").value,
+            };
+            await connection.invoke("EditSubject", subject);
+
+            hideUpdateForm();
+            e.target.reset();
+        });
+
+        async function deleteSubject(id) {
+            await connection.invoke("DeleteSubject", id);
+        }
+
+        async function startConnection() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+
+                await connection.invoke("SendSubjects");
+            } catch (err) {
+                console.error(err);
+                setTimeout(startConnection, 5000);
+            }
+        }
+
+        connection.onclose(startConnection);
+        startConnection();
+    </script>
+</body>
+</html>

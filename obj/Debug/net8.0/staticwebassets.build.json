@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "Hash": "paseOL3WYbuhXFpCjdB5mVknk1erTlpJX67uq1UYTDg=",
+  "Source": "UniversityApp",
+  "BasePath": "_content/UniversityApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "UniversityApp\\wwwroot",
+      "Source": "UniversityApp",
+      "ContentRoot": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\",
+      "BasePath": "_content/UniversityApp",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\index.html",
+      "SourceId": "UniversityApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\",
+      "BasePath": "_content/UniversityApp",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\position.html",
+      "SourceId": "UniversityApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\",
+      "BasePath": "_content/UniversityApp",
+      "RelativePath": "position.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\position.html"
+    },
+    {
+      "Identity": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\subject.html",
+      "SourceId": "UniversityApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\uchoba\\4 course\\dotnet\\lab6\\UniversityApp\\wwwroot\\",
+      "BasePath": "_content/UniversityApp",
+      "RelativePath": "subject.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\subject.html"
+    }
+  ]
+}
