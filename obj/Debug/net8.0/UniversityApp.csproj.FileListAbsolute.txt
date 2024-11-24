@@ -100,3 +100,4 @@ D:\uchoba\4 course\dotnet\lab6\UniversityApp\obj\Debug\net8.0\UniversityApp.pdb
 D:\uchoba\4 course\dotnet\lab6\UniversityApp\obj\Debug\net8.0\UniversityApp.genruntimeconfig.cache
 D:\uchoba\4 course\dotnet\lab6\UniversityApp\obj\Debug\net8.0\ref\UniversityApp.dll
 D:\uchoba\4 course\dotnet\lab6\UniversityApp\bin\Debug\net8.0\UniversityApp.staticwebassets.runtime.json
+D:\uchoba\4 course\dotnet\lab6\UniversityApp\obj\Debug\net8.0\UniversityApp.sourcelink.json
